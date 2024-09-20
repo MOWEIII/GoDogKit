@@ -3,12 +3,19 @@ using Godot;
 
 namespace GoDogKit
 {
+    /// <summary>
+    /// A simple implementation of an object pool without security checks.    
+    /// </summary>
     public partial class ObjectPool : Node
     {
-        // The scene stored in the pool.        
+        /// <summary>
+        /// The scene stored in the pool.        
+        /// </summary>
         [Export] public PackedScene Scene { get; set; }
 
-        // The initial size of the pool.
+        /// <summary>
+        /// The initial size of the pool.
+        /// </summary>
         [Export]
         public int InitialSize
         {
@@ -17,23 +24,37 @@ namespace GoDogKit
         }
         private int m_initialSize = 10;
 
-        // emitted when a node is gotten from the pool.    
+        /// <summary>
+        /// Emitted when a node is gotten from the pool.    
+        /// </summary>
+        /// <param name="node"> The node that was gotten.</param>
         [Signal] public delegate void GottenEventHandler(Node node);
 
-        // emitted when a node is instantiated inside the pool.        
+        /// <summary>
+        /// Emitted when a node is instantiated inside the pool.        
+        /// </summary>
+        /// <param name="node"> The node that was instantiated.</param>
         [Signal] public delegate void InstantiatedEventHandler(Node node);
 
-        // emitted when a node is released back to the pool.        
+        /// <summary>
+        /// Emitted when a node is released back to the pool.        
+        /// </summary>
+        /// <param name="node"> The node that was released.</param>
         [Signal] public delegate void ReleasedEventHandler(Node node);
 
-        // emitted when a node is freed from the pool.        
+        /// <summary>
+        /// Emitted when a node is freed from the pool.
+        /// </summary>
+        /// <param name="node"> The node that was freed.</param>
         [Signal] public delegate void FreedEventHandler(Node node);
 
         // The queue of nodes in the pool.
         private Queue<Node> queue;
 
-        // The number of nodes in the pool currently.        
-        public int Size
+        /// <summary>
+        /// The number of nodes in the pool currently.       
+        /// </summary>
+        public virtual int Size
         {
             get => queue.Count;
         }
@@ -53,8 +74,11 @@ namespace GoDogKit
             }
         }
 
-        // Get a node from the pool as Node, and add it to the scene tree.  
-        // If the pool is empty, a new node will be instantiated and added to the scene tree.
+        /// <summary>
+        /// Get a node from the pool as Node, and add it to the scene tree root.  
+        /// If the pool is empty, a new node will be instantiated and added to the scene tree.
+        /// </summary>         
+        /// <returns> The node that was gotten. </returns>
         public virtual Node Get()
         {
             if (!queue.TryDequeue(out Node node))
@@ -62,13 +86,18 @@ namespace GoDogKit
                 node = Scene.Instantiate();
                 EmitSignal(SignalName.Instantiated, node);
             }
-            AddChild(node);
+            GetTree().Root.AddChild(node);
             EmitSignal(SignalName.Gotten, node);
             return node;
         }
 
-        // Get a node from the pool as specified Type, and add it to the scene tree.  
-        // If the pool is empty, a new node will be instantiated and added to the scene tree.
+
+        /// <summary>
+        /// Get a node from the pool as specified Type, and add it to the scene tree root.  
+        ///If the pool is empty, a new node will be instantiated and added to the scene tree root.
+        /// </summary>
+        /// <typeparam name="T"> Node type to get. </typeparam>
+        /// <returns> The node that was gotten. </returns>        
         public virtual T Get<T>() where T : Node
         {
             if (!queue.TryDequeue(out Node node))
@@ -76,20 +105,28 @@ namespace GoDogKit
                 node = Scene.Instantiate() as T;
                 EmitSignal(SignalName.Instantiated, node);
             }
-            AddChild(node);
+            GetTree().Root.AddChild(node);
             EmitSignal(SignalName.Gotten, node);
             return node as T;
         }
 
-        // Release a node back to the pool and remove it from the scene tree.
+        /// <summary>
+        /// Release a node back to the pool and remove it from the scene tree root.
+        /// Notice that there are no checks for whethet the node was creatd by the pool or not.
+        /// </summary>
+        /// <param name="node"> The Node to release. </param>
         public virtual void Release(Node node)
         {
-            RemoveChild(node);
+            GetTree().Root.RemoveChild(node);
             queue.Enqueue(node);
             EmitSignal(SignalName.Released, node);
         }
 
-        // Free a node from the pool and remove it from the scene tree at the end of the frame.
+        /// <summary>
+        /// Free a node from the pool and remove it from the scene tree at the end of the frame.
+        /// Notice that there are no checks for whethet the node was creatd by the pool or not.
+        /// </summary>
+        /// <param name="node"> The Node to free. </param>
         public virtual void Free(Node node)
         {
             node.QueueFree();
@@ -97,5 +134,3 @@ namespace GoDogKit
         }
     }
 }
-
-
