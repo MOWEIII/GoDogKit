@@ -19,6 +19,13 @@ namespace GoDogKit
 
             return node;
         }
+
+        public static Vector2 RandomShpere(float radius)
+        {
+            var biasX = (float)GD.RandRange(-radius, radius);
+            var biasY = (float)GD.RandRange(-radius, radius);
+            return new Vector2(biasX, biasY);
+        }
     }
 }
 

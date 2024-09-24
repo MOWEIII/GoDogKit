@@ -9,7 +9,7 @@ namespace GoDogKit
 	{
 		// const string GoDogKitPluginName = "GoDogKit";
 		public const string GoDogKitScriptFolderPath = "res://addons/GoDogKit/Scripts/";
-		public const string GoDogKitIconFolderPath = "res://addons/GoDogKit/Icons/";		
+		public const string GoDogKitIconFolderPath = "res://addons/GoDogKit/Icons/";
 
 		private static readonly List<string> GoDogKitNodes = new();
 		private void AddNode(string nodeName, string parentNodeName, string scriptName, string IconName)
@@ -35,6 +35,7 @@ namespace GoDogKit
 		public override void _EnterTree()
 		{
 			AddNode("ObjectPool", "Node", "ObjectPool.cs", "ObjectPool.png");
+			AddNode("AutoCamera2D", "Camera2D", "AutoCamera2D.cs", "AutoCamera2D.png");
 		}
 
 		public override void _ExitTree()
