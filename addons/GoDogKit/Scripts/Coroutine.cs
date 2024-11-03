@@ -103,15 +103,10 @@ namespace GoDogKit
     /// <summary>
     /// Used for stun a coroutine in a certain duration.
     /// </summary>
-    public class WaitForSeconds : Coroutine
+    public class WaitForSeconds(double duration) : Coroutine(enumerator: null, autoStart: true)
     {
-        private readonly double duration;
-        private double currentTime;
-        public WaitForSeconds(double duration) : base(enumerator: null, autoStart: true)
-        {
-            this.duration = duration;
-            currentTime = 0;
-        }
+        private readonly double duration = duration;
+        private double currentTime = 0;
         public override void Process(double delta) => currentTime += delta;
         public override bool IsDone() => currentTime >= duration;
     }

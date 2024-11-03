@@ -11,6 +11,7 @@
 * 自定义2D相机
 * 简易对象池
 * 轻量级协程
+* 轻量级全局管理类
 
 ## 更新计划
 
@@ -32,6 +33,7 @@ bytheway, the name **"GoDogKit"** is not a negative word, just a joke. **: )**
 * Custom 2D Camera AutoCamera2D
 * Simple Object Pool
 * Lightweight Coroutine
+* Lightweight Global Manager
 
 ## Update Plans
 
