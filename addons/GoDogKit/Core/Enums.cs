@@ -19,4 +19,10 @@ namespace GoDogKit
         Screen
     }
 
+    public enum EncryptionMethod
+    {
+        None,
+        Negation
+    }
+
 }

@@ -39,8 +39,6 @@ namespace GoDogKit
                 InputModeChanged.Invoke(CurrentInputMode);
                 m_PreviousInputMode = CurrentInputMode;
             }
-
-            // GD.Print("CurrentInputMode: " + CurrentInputMode);
         }
     }
 }

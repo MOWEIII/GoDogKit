@@ -137,6 +137,8 @@ namespace GoDogKit
         /// <param name="node"> The Node to release. </param>
         public virtual void Release(Node node)
         {
+            EmitSignal(SignalName.Released, node);
+
             if (Parent != null)
             {
                 Parent.RemoveChild(node);
@@ -148,12 +150,11 @@ namespace GoDogKit
 
             queue.Enqueue(node);
 
-            EmitSignal(SignalName.Released, node);
         }
 
         /// <summary>
         /// Free a node from the pool and remove it from the parent or the scene tree at the end of the frame.
-        /// Notice that there are no checks for whethet the node was creatd by the pool or not.
+        /// Notice that there are no checks for whether the node was creatd by the pool or not.
         /// </summary>
         /// <param name="node"> The Node to free. </param>
         public virtual void Free(Node node)

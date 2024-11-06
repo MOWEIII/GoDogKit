@@ -5,12 +5,18 @@ namespace GoDogKit
 {
     public static class Extensions
     {
+        #region Math
+
         public static Vector2 RandomShpere(float radius)
         {
             var biasX = (float)GD.RandRange(-radius, radius);
             var biasY = (float)GD.RandRange(-radius, radius);
             return new Vector2(biasX, biasY);
         }
+
+        #endregion
+
+        #region CanvasItem
 
         public static void Enable(this CanvasItem item)
         {
@@ -23,6 +29,10 @@ namespace GoDogKit
             item.Hide();
             item.ProcessMode = Node.ProcessModeEnum.Disabled;
         }
+
+        #endregion
+
+        #region Coroutine
 
         public static void StartCoroutine(this Node node, Coroutine coroutine, CoroutineProcessMode mode = CoroutineProcessMode.Physics)
         {
@@ -55,6 +65,10 @@ namespace GoDogKit
             StopCoroutine(node, enumerable.GetEnumerator());
         }
 
+        #endregion
+
+        #region Input
+
         /// <summary>
         /// Get the current input mode. Same as GlobalInputManager.CurrentInputMode.
         /// </summary>        
@@ -63,6 +77,8 @@ namespace GoDogKit
         {
             return GlobalInputManager.CurrentInputMode;
         }
+
+        #endregion        
     }
 }
 

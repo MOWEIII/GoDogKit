@@ -11,10 +11,7 @@ namespace GoDogKit
     /// </summary>
     public partial class GlobalCoroutineLauncher : Singleton<GlobalCoroutineLauncher>
     {
-        // public static GlobalCoroutineLauncher Instance { get; private set; }
         private GlobalCoroutineLauncher() { }
-
-        // public override void _EnterTree() => Instance = this;
         private readonly List<Coroutine> m_ProcessCoroutines = [];
         private readonly List<Coroutine> m_PhysicsProcessCoroutines = [];
         private readonly Dictionary<IEnumerator, List<Coroutine>> m_Coroutine2List = [];

@@ -8,7 +8,7 @@ namespace GoDogKit
 	public sealed partial class GoDogKitManager : EditorPlugin
 	{
 		// const string GoDogKitPluginName = "GoDogKit";
-		public const string GoDogKitScriptFolderPath = "res://addons/GoDogKit/Scripts/";
+		public const string GoDogKitFolderPath = "res://addons/GoDogKit/";
 		public const string GoDogKitIconFolderPath = "res://addons/GoDogKit/Icons/";
 
 		private static readonly List<string> GoDogKitNodes = [];
@@ -16,7 +16,7 @@ namespace GoDogKit
 
 		private void AddNode(string nodeName, string parentNodeName, string scriptName, string IconName)
 		{
-			var script = ResourceLoader.Load<Script>(GoDogKitScriptFolderPath + scriptName);
+			var script = ResourceLoader.Load<Script>(GoDogKitFolderPath + scriptName);
 			var icon = ResourceLoader.Load<Texture2D>(GoDogKitIconFolderPath + IconName);
 
 			AddCustomType(nodeName, parentNodeName, script, icon);
@@ -26,7 +26,7 @@ namespace GoDogKit
 
 		private void AddAutoload(string Name, string scriptName)
 		{
-			AddAutoloadSingleton(Name, GoDogKitScriptFolderPath + scriptName);
+			AddAutoloadSingleton(Name, GoDogKitFolderPath + scriptName);
 			GoDogKitAutoloads.Add(Name);
 		}
 
@@ -50,12 +50,12 @@ namespace GoDogKit
 
 		public override void _EnterTree()
 		{
-			AddNode("ObjectPool", "Node", "ObjectPool.cs", "ObjectPool.png");
-			AddNode("AutoCamera2D", "Camera2D", "AutoCamera2D.cs", "AutoCamera2D.png");
-			AddNode("BootSplashPlayer", "VideoStreamPlayer", "BootSplashPlayer.cs", "BootSplashPlayer.png");
+			AddNode("ObjectPool", "Node", "Core/ObjectPool.cs", "ObjectPool.png");
+			AddNode("AutoCamera2D", "Camera2D", "Camera/AutoCamera2D.cs", "AutoCamera2D.png");
+			AddNode("BootSplashPlayer", "VideoStreamPlayer", "Core/BootSplashPlayer.cs", "BootSplashPlayer.png");
 
-			AddAutoload("GlobalCoroutineLauncher", "GlobalCoroutineLauncher.cs");
-			AddAutoload("GlobalInputManager", "GlobalInputManager.cs");
+			AddAutoload("GlobalCoroutineLauncher", "Coroutine/GlobalCoroutineLauncher.cs");
+			AddAutoload("GlobalInputManager", "Core/GlobalInputManager.cs");
 		}
 
 		public override void _ExitTree()
