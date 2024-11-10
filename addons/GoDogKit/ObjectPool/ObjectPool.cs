@@ -74,7 +74,7 @@ namespace GoDogKit
             {
                 for (int i = 0; i < InitialSize; i++)
                 {
-                    Instantiate();
+                    queue.Enqueue(Instantiate());
                 }
             }
         }
@@ -139,17 +139,9 @@ namespace GoDogKit
         {
             EmitSignal(SignalName.Released, node);
 
-            if (Parent != null)
-            {
-                Parent.RemoveChild(node);
-            }
-            else
-            {
-                GetTree().Root.RemoveChild(node);
-            }
+            node.GetParent().RemoveChild(node);
 
             queue.Enqueue(node);
-
         }
 
         /// <summary>
@@ -163,5 +155,28 @@ namespace GoDogKit
 
             EmitSignal(SignalName.Freed, node);
         }
+
+        /// <summary>
+        /// Clean the pool and all the nodes still inside it.
+        /// </summary>
+        public virtual void Clean()
+        {
+            foreach (Node node in queue)
+            {
+                node.QueueFree();
+            }
+
+            queue.Clear();
+        }
+
+        /// <summary>
+        /// Clean the pool and all the nodes still inside it, and free the pool.
+        /// </summary>
+        public virtual void Destroy()
+        {
+            Clean();
+            QueueFree();
+        }
+
     }
 }

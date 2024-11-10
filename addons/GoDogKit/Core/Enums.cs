@@ -17,12 +17,6 @@ namespace GoDogKit
         KeyboardAndMouse,
         Gamepad,
         Screen
-    }
-
-    public enum EncryptionMethod
-    {
-        None,
-        Negation
-    }
+    }   
 
 }

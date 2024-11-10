@@ -69,16 +69,79 @@ namespace GoDogKit
 
         #region Input
 
-        /// <summary>
-        /// Get the current input mode. Same as GlobalInputManager.CurrentInputMode.
-        /// </summary>        
-        /// <returns> The current input mode. </returns>
-        public static InputMode GetInputMode(this Node node)
+        // /// <summary>
+        // /// Get the current input mode. Same as GlobalInputManager.CurrentInputMode.
+        // /// </summary>        
+        // /// <returns> The current input mode. </returns>
+        // public static InputMode GetInputMode(this Node node)
+        // {
+        //     return GlobalInputManager.CurrentInputMode;
+        // }
+
+        #endregion
+
+        #region ObjectPool
+
+        public static void Register(this PackedScene scene)
         {
-            return GlobalInputManager.CurrentInputMode;
+            GlobalObjectPool.Register(scene);
         }
 
-        #endregion        
+        public static void Unregister(this PackedScene scene)
+        {
+            GlobalObjectPool.Unregister(scene);
+        }
+
+        public static Node Get(this PackedScene scene)
+        {
+            return GlobalObjectPool.Get(scene);
+        }
+
+        public static T Get<T>(this PackedScene scene) where T : Node
+        {
+            return GlobalObjectPool.Get<T>(scene);
+        }
+
+        public static void Release(this PackedScene scene, Node node)
+        {
+            GlobalObjectPool.Release(scene, node);
+        }
+
+        public static ObjectPool GetPool(this PackedScene scene)
+        {
+            return GlobalObjectPool.GetPool(scene);
+        }
+
+        #endregion
+
+        #region Audio
+
+        public static void Register(this AudioStream stream, string bus = "Master")
+        {
+            GlobalAudioManager.Register(stream, bus);
+        }
+
+        public static void Unregister(this AudioStream stream)
+        {
+            GlobalAudioManager.Unregister(stream);
+        }
+
+        public static void Play(this AudioStream stream)
+        {
+            GlobalAudioManager.Play(stream);
+        }
+
+        public static void Stop(this AudioStream stream)
+        {
+            GlobalAudioManager.Stop(stream);
+        }
+
+        public static AudioStreamPlayer GetPlayer(this AudioStream stream)
+        {
+            return GlobalAudioManager.GetPlayer(stream);
+        }
+
+        #endregion
     }
 }
 

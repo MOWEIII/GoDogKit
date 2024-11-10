@@ -96,13 +96,12 @@ namespace GoDogKit
         }
 
         /// <summary>
-        /// Get the current number of coroutines running, both in Idle and Physics process modes.
+        /// Get the current number of coroutines running globally, both in Idle and Physics process modes.
         /// </summary>
         /// <returns> The number of coroutines running. </returns>
         public static int GetCurrentCoroutineCount()
         => Instance.m_ProcessCoroutines.Count
-        + Instance.m_PhysicsProcessCoroutines.Count;
-
+        + Instance.m_PhysicsProcessCoroutines.Count;        
     }
 }
 

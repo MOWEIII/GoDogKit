@@ -50,12 +50,14 @@ namespace GoDogKit
 
 		public override void _EnterTree()
 		{
-			AddNode("ObjectPool", "Node", "Core/ObjectPool.cs", "ObjectPool.png");
+			AddNode("ObjectPool", "Node", "ObjectPool/ObjectPool.cs", "ObjectPool.png");
 			AddNode("AutoCamera2D", "Camera2D", "Camera/AutoCamera2D.cs", "AutoCamera2D.png");
-			AddNode("BootSplashPlayer", "VideoStreamPlayer", "Core/BootSplashPlayer.cs", "BootSplashPlayer.png");
+			AddNode("BootSplashPlayer", "VideoStreamPlayer", "UI/BootSplashPlayer.cs", "BootSplashPlayer.png");
 
 			AddAutoload("GlobalCoroutineLauncher", "Coroutine/GlobalCoroutineLauncher.cs");
-			AddAutoload("GlobalInputManager", "Core/GlobalInputManager.cs");
+			AddAutoload("GlobalInputManager", "Input/GlobalInputManager.cs");
+			AddAutoload("GlobalObjectPool", "ObjectPool/GlobalObjectPool.cs");
+			AddAutoload("GlobalAudioManager", "Audio/GlobalAudioManager.cs");
 		}
 
 		public override void _ExitTree()

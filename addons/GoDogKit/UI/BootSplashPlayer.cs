@@ -9,7 +9,8 @@ namespace GoDogKit
     {
         [Export] public bool OneShot { get; set; } = true;
         private static bool m_Over = false;
-        public override void _EnterTree()
+
+        public override void _Ready()
         {
             if (m_Over) return;
 
