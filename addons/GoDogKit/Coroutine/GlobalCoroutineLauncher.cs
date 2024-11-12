@@ -101,7 +101,7 @@ namespace GoDogKit
         /// <returns> The number of coroutines running. </returns>
         public static int GetCurrentCoroutineCount()
         => Instance.m_ProcessCoroutines.Count
-        + Instance.m_PhysicsProcessCoroutines.Count;        
+        + Instance.m_PhysicsProcessCoroutines.Count;
     }
 }
 

@@ -32,12 +32,10 @@ namespace GoDogKit
         {
             if (!m_InputModeMap.TryGetValue(@event.GetType(), out InputMode inputMode)) return;
 
-            CurrentInputMode = inputMode;
-
-            if (CurrentInputMode != m_PreviousInputMode)
+            if (inputMode != m_PreviousInputMode)
             {
                 InputModeChanged.Invoke(CurrentInputMode);
-                m_PreviousInputMode = CurrentInputMode;
+                m_PreviousInputMode = CurrentInputMode = inputMode;
             }
         }
     }

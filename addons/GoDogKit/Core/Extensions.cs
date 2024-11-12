@@ -5,6 +5,10 @@ namespace GoDogKit
 {
     public static class Extensions
     {
+        #region SceneTree                
+
+        #endregion
+
         #region Math
 
         public static Vector2 RandomShpere(float radius)
@@ -82,14 +86,16 @@ namespace GoDogKit
 
         #region ObjectPool
 
-        public static void Register(this PackedScene scene)
+        public static PackedScene Register(this PackedScene scene, Node poolParent = null, int poolInitialSize = 10)
         {
-            GlobalObjectPool.Register(scene);
+            GlobalObjectPool.Register(scene, poolParent, poolInitialSize);
+            return scene;
         }
 
-        public static void Unregister(this PackedScene scene)
+        public static PackedScene Unregister(this PackedScene scene)
         {
             GlobalObjectPool.Unregister(scene);
+            return scene;
         }
 
         public static Node Get(this PackedScene scene)
@@ -116,14 +122,16 @@ namespace GoDogKit
 
         #region Audio
 
-        public static void Register(this AudioStream stream, string bus = "Master")
+        public static AudioStream Register(this AudioStream stream, string bus = "Master")
         {
             GlobalAudioManager.Register(stream, bus);
+            return stream;
         }
 
-        public static void Unregister(this AudioStream stream)
+        public static AudioStream Unregister(this AudioStream stream)
         {
             GlobalAudioManager.Unregister(stream);
+            return stream;
         }
 
         public static void Play(this AudioStream stream)

@@ -13,23 +13,22 @@ namespace GoDogKit
         /// Default switch focus to a control if it's not null when UI is opened.
         /// </summary>
         [Export] public Control FirstGrab { get; set; }
+        [Export] public ProcessModeEnum OpenProcessMode { get; set; } = ProcessModeEnum.Inherit;
+        [Export] public ProcessModeEnum CloseProcessMode { get; set; } = ProcessModeEnum.Disabled;
         public UIBase Parent { get; set; }
 
         // New added two signals for UIBase denotes the opening and closing of the UI element.
         [Signal] public delegate void OnOpenEventHandler();
         [Signal] public delegate void OnCloseEventHandler();
 
-        public override void _EnterTree()
+        public override void _Ready()
         {
             foreach (UIBase child in Children)
             {
                 child.Parent = this;
             }
-        }
 
-        public override void _Ready()
-        {
-            Layer = Parent.Layer + 1;
+            if (Parent != null) Layer = Parent.Layer + 1;
         }
 
         public virtual UIBase OpenChild(string UIName)
@@ -38,8 +37,7 @@ namespace GoDogKit
             {
                 if (child.Name == UIName)
                 {
-                    child.Show();
-                    child.EmitSignal(SignalName.OnOpen);
+                    child.Open();
                     return child;
                 }
             }
@@ -55,50 +53,53 @@ namespace GoDogKit
             }
 
             UIBase child = Children[index];
-            child.Show();
-            child.EmitSignal(SignalName.OnOpen);
+            child.Open();
             return child;
         }
 
-        public virtual void CloseChild(string UIName)
+        public virtual UIBase CloseChild(string UIName)
         {
             foreach (UIBase child in Children)
             {
                 if (child.Name == UIName)
                 {
-                    child.Hide();
-                    child.EmitSignal(SignalName.OnClose);
-                    return;
+                    child.Close();
+                    return child;
                 }
             }
+
+            return null;
         }
 
-        public virtual void CloseChild(int index)
+        public virtual UIBase CloseChild(int index)
         {
             if (index < 0 || index >= Children.Length)
             {
-                return;
+                return null;
             }
 
             UIBase child = Children[index];
-            child.Hide();
-            child.EmitSignal(SignalName.OnClose);
+            child.Close();
+            return child;
         }
 
         public virtual void Open()
         {
             Show();
-            ProcessMode = ProcessModeEnum.Inherit;
+            FirstGrab?.GrabFocus();
+            EmitSignal(SignalName.OnOpen);
+            ProcessMode = OpenProcessMode;
         }
 
         public virtual void Close()
         {
             Hide();
-            ProcessMode = ProcessModeEnum.Disabled;
+            EmitSignal(SignalName.OnClose);
+            ProcessMode = CloseProcessMode;
         }
 
         // Override old expression. Choose Open and Close instead of Show and Hide.
-        protected virtual new void Show() { base.Show(); FirstGrab?.GrabFocus(); }
+        protected virtual new void Show() { base.Show(); }
         protected virtual new void Hide() { base.Hide(); }
     }
 }

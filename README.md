@@ -12,6 +12,8 @@
 * 简易对象池
 * 轻量级协程
 * 轻量级全局管理类
+* 简易UI组件
+* 异步加载封装
 
 ## 更新计划
 
@@ -34,6 +36,8 @@ bytheway, the name **"GoDogKit"** is not a negative word, just a joke. **: )**
 * Simple Object Pool
 * Lightweight Coroutine
 * Lightweight Global Manager
+* Simple UI Components
+* Async Loading Encapsulation
 
 ## Update Plans
 

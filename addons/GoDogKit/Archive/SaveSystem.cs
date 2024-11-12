@@ -8,7 +8,6 @@ using Godot;
 
 namespace GoDogKit
 {
-
     #region ISaveable
 
     /// <summary>

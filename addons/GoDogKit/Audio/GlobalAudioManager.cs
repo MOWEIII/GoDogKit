@@ -10,6 +10,10 @@ namespace GoDogKit
     {
         private readonly Dictionary<AudioStream, AudioStreamPlayer> m_players = [];
 
+        public static readonly float MaxDb = 20f;
+
+        public static readonly float MinDb = -20f;
+
         // public override void _Ready()
         // {
         //     AudioServer.SetBusLayout
@@ -57,6 +61,19 @@ namespace GoDogKit
             Instance.m_players.Remove(stream);
         }
 
+        /// <summary>
+        /// Unregisters all audio streams from the global audio manager.
+        /// </summary>
+        public static void UnregisterAll()
+        {
+            foreach (var player in Instance.m_players.Values)
+            {
+                player.QueueFree();
+            }
+
+            Instance.m_players.Clear();
+        }
+
         private static AudioStreamPlayer ForceGetPlayer(AudioStream stream)
         {
             if (!Instance.m_players.TryGetValue(stream, out var player))
@@ -77,8 +94,27 @@ namespace GoDogKit
         public static void SetBusMute(string bus, bool mute)
          => AudioServer.SetBusMute(AudioServer.GetBusIndex(bus), mute);
 
-        public static void SetBusVolume(string bus, float db)
-         => AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(bus), db);
+        /// <summary>
+        /// Set the volume of a bus in float range [0, 1] base on the min and max db values.
+        /// </summary>
+        /// <param name="bus"> The bus to set the volume of. </param>
+        /// <param name="volume"> The volume of the bus in float range [0, 1]. </param>
+        public static void SetBusVolume(string bus, float volume = 0.5f)
+        {
+            var busIndex = AudioServer.GetBusIndex(bus);
+
+            AudioServer.SetBusMute(busIndex, false);
+
+            if (volume <= 0f)
+            {
+                AudioServer.SetBusMute(busIndex, true);
+            }
+            else
+            {
+                var db = Mathf.Lerp(MinDb, MaxDb, volume);
+                AudioServer.SetBusVolumeDb(busIndex, db);
+            }
+        }
 
         public static void MuteAll()
         {

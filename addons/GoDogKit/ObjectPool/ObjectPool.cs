@@ -54,6 +54,11 @@ namespace GoDogKit
         /// <param name="node"> The node that was freed.</param>
         [Signal] public delegate void FreedEventHandler(Node node);
 
+        /// <summary>
+        /// Emitted when the pool is destroyed.
+        /// </summary>
+        [Signal] public delegate void DestroyedEventHandler();
+
         // The queue of nodes in the pool.
         private Queue<Node> queue;
 
@@ -174,6 +179,7 @@ namespace GoDogKit
         /// </summary>
         public virtual void Destroy()
         {
+            EmitSignal(SignalName.Destroyed);
             Clean();
             QueueFree();
         }

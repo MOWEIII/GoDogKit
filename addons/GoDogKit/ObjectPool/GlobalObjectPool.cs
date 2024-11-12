@@ -4,12 +4,12 @@ using Godot;
 namespace GoDogKit
 {
     /// <summary>
-    /// A Global Manager for Object Pools, Maintains links between PackedScenes and their corresponding ObjectPools.
+    /// A Global Manager for Object Pools, Maintains links between PackedScenes and their corresponding m_ObjectPools.
     /// Provides methods to register, unregister, get and release objects from object pools.
     /// </summary>
     public partial class GlobalObjectPool : Singleton<GlobalObjectPool>
     {
-        private readonly Dictionary<PackedScene, ObjectPool> ObjectPools = [];
+        private readonly Dictionary<PackedScene, ObjectPool> m_ObjectPools = [];
 
         /// <summary>
         /// Registers a PackedScene to the GlobalObjectPool.
@@ -19,7 +19,7 @@ namespace GoDogKit
         /// <param name="poolInitialSize"> The initial size of the ObjectPool. </param>
         public static void Register(PackedScene scene, Node poolParent = null, int poolInitialSize = 10)
         {
-            if (Instance.ObjectPools.ContainsKey(scene))
+            if (Instance.m_ObjectPools.ContainsKey(scene))
             {
                 GD.Print(scene.ResourceName + " already registered to GlobalObjectPool.");
                 return;
@@ -34,7 +34,7 @@ namespace GoDogKit
 
             Instance.AddChild(pool);
 
-            Instance.ObjectPools.Add(scene, pool);
+            Instance.m_ObjectPools.Add(scene, pool);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace GoDogKit
         /// <param name="scene"> The PackedScene to unregister. </param>
         public static void Unregister(PackedScene scene)
         {
-            if (!Instance.ObjectPools.TryGetValue(scene, out ObjectPool pool))
+            if (!Instance.m_ObjectPools.TryGetValue(scene, out ObjectPool pool))
             {
                 GD.Print(scene.ResourceName + " not registered to GlobalObjectPool.");
                 return;
@@ -51,16 +51,16 @@ namespace GoDogKit
 
             pool.Destroy();
 
-            Instance.ObjectPools.Remove(scene);
+            Instance.m_ObjectPools.Remove(scene);
         }
 
         //Just for simplify coding. Ensure the pool has always been registered.
         private static ObjectPool ForceGetPool(PackedScene scene)
         {
-            if (!Instance.ObjectPools.TryGetValue(scene, out ObjectPool pool))
+            if (!Instance.m_ObjectPools.TryGetValue(scene, out ObjectPool pool))
             {
                 Register(scene);
-                pool = Instance.ObjectPools[scene];
+                pool = Instance.m_ObjectPools[scene];
             }
 
             return pool;
@@ -102,12 +102,12 @@ namespace GoDogKit
         /// </summary>
         public static void UnregisterAll()
         {
-            foreach (var pool in Instance.ObjectPools.Values)
+            foreach (var pool in Instance.m_ObjectPools.Values)
             {
                 pool.Destroy();
             }
 
-            Instance.ObjectPools.Clear();
+            Instance.m_ObjectPools.Clear();
         }
 
         /// <summary>
