@@ -13,6 +13,7 @@ namespace GoDogKit
 
 		private static readonly List<string> GoDogKitNodes = [];
 		private static readonly List<string> GoDogKitAutoloads = [];
+		public static readonly ExportManager ExportManager = new();
 
 		private void AddNode(string nodeName, string parentNodeName, string scriptName, string IconName)
 		{
@@ -58,13 +59,15 @@ namespace GoDogKit
 			AddAutoload("GlobalInputManager", "Input/GlobalInputManager.cs");
 			AddAutoload("GlobalObjectPool", "ObjectPool/GlobalObjectPool.cs");
 			AddAutoload("GlobalAudioManager", "Audio/GlobalAudioManager.cs");
+
+			AddExportPlugin(ExportManager);
 		}
 
-		public override void _ExitTree()
+		public override void _DisablePlugin()
 		{
 			ClearNodes();
-
 			ClearAutoloads();
+			RemoveExportPlugin(ExportManager);
 		}
 	}
 }

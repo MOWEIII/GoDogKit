@@ -89,10 +89,10 @@ namespace GoDogKit
                 DefaultSaveDirectory = new DirectoryInfo("Save");
             }
 
-            if (!DefaultSaveDirectory.Exists)
-            {
-                DefaultSaveDirectory.Create();
-            }
+            // if (!DefaultSaveDirectory.Exists)
+            // {
+            //     DefaultSaveDirectory.Create();
+            // }
         }
 
         public static string Encrypt(string data, SaveEncryption encryption)
@@ -134,9 +134,11 @@ namespace GoDogKit
         /// <returns></returns>
         public static bool HasFiles(SaveSubsystem system, out int saveNumber, bool extensionCheck = true)
         {
-            var fileInfos = system.SaveDirectory.GetFiles();
-
             saveNumber = 0;
+
+            if (!Directory.Exists(system.SaveDirectory.FullName)) return false;
+
+            var fileInfos = system.SaveDirectory.GetFiles();
 
             if (fileInfos.Length == 0)
             {
@@ -183,6 +185,8 @@ namespace GoDogKit
             string data = Serialize(saveable);
 
             string encryptedData = SaveSystem.Encrypt(data, Encryption);
+
+            if (!Directory.Exists(SaveDirectory.FullName)) SaveDirectory.Create();
 
             File.WriteAllText(SaveSystem.GetFullPath(saveable), encryptedData);
         }
@@ -323,6 +327,16 @@ namespace GoDogKit
         public static void Load<T>(this SaveSubsystem subsystem, ref T saveable) where T : class, ISaveable
         {
             saveable = subsystem.Load(saveable) as T;
+        }
+
+        public static Task SaveAsync<T>(this SaveSubsystem subsystem, T saveable) where T : class, ISaveable
+        {
+            return subsystem.SaveAsync(saveable);
+        }
+
+        public static Task<T> LoadAsync<T>(this SaveSubsystem subsystem, T saveable) where T : class, ISaveable, new()
+        {
+            return subsystem.LoadAsync(saveable) as Task<T>;
         }
 
         public static bool Exists(this ISaveable saveable)

@@ -1,3 +1,5 @@
+using System.IO;
+using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
 
@@ -67,6 +69,19 @@ namespace GoDogKit
     /// </summary>
     public static class RuntimeLoader
     {
+        public static string Root { get; private set; }
+
+        static RuntimeLoader()
+        {
+            if (OS.HasFeature("editor"))
+            {
+                Root = "Streaming";
+            }
+            else
+            {
+                Root = OS.GetExecutablePath().GetBaseDir();
+            }
+        }
         /// <summary>
         /// Loads a resource from the given path asynchronously and returns a LoadTask object
         /// that can be used to track the progress and result of the load operation.
@@ -83,6 +98,11 @@ namespace GoDogKit
         public static LoadTask<T> Load<T>(string path, string typeHint = "", bool useSubThreads = false, ResourceLoader.CacheMode cacheMode = ResourceLoader.CacheMode.Reuse) where T : Resource
         {
             return new LoadTask<T>(path).Load(typeHint, useSubThreads, cacheMode) as LoadTask<T>;
+        }
+
+        public static Task<string> LoadStreaming(string path)
+        {
+            return File.ReadAllTextAsync(Path.Combine(Root, path));
         }
     }
 
