@@ -100,9 +100,73 @@ namespace GoDogKit
             return new LoadTask<T>(path).Load(typeHint, useSubThreads, cacheMode) as LoadTask<T>;
         }
 
+        /// <summary>
+        /// Load a text file from the Streaming folder asynchronously.
+        /// </summary>
+        /// <param name="path"> The path to the file, relative to the Streaming folder. </param>
+        /// <returns> A Task that can be awaited to get the contents of the file as a string. </returns> 
         public static Task<string> LoadStreaming(string path)
         {
             return File.ReadAllTextAsync(Path.Combine(Root, path));
+        }
+
+        /// <summary>
+        /// Load an image file from the Streaming folder.
+        /// </summary>
+        /// <param name="path"> The path to the file, relative to the Streaming folder. </param>
+        /// <returns> The loaded image as an Godot Image object. </returns>
+        public static Image LoadImageStreaming(string path)
+        {
+            var image = new Image();
+            image.Load(Path.Combine(Root, path));
+            return image;
+        }
+
+        /// <summary>
+        /// Load an audio file from the Streaming folder.
+        /// </summary>
+        /// <param name="path"> The path to the file, relative to the Streaming folder. </param>
+        /// <returns> The loaded audio as an Godot AudioStream object. </returns>
+        public static AudioStream LoadAudioStreaming(string path)
+        {
+            if (!Path.Exists(Path.Combine(Root, path)))
+                throw new System.Exception("Audio file not found: " + path);
+
+            var extension = Path.GetExtension(path).ToLower() ?? throw new System.Exception("File extension needed : " + path);
+
+            return extension switch
+            {
+                ".mp3" => new AudioStreamMP3() { Data = File.ReadAllBytes(Path.Combine(Root, path)) },
+
+                ".wav" => new AudioStreamWav() { Data = File.ReadAllBytes(Path.Combine(Root, path)) },
+
+                ".ogg" => AudioStreamOggVorbis.LoadFromFile(Path.Combine(Root, path)),
+
+                _ => throw new System.Exception("Unsupported audio format: " + Path.GetExtension(path)),
+            };
+        }
+
+        public static T LoadAudioStreaming<T>(string path) where T : AudioStream
+        {
+            var audioStream = LoadAudioStreaming(path);
+            if (audioStream is T) return audioStream as T;
+            else throw new System.Exception("Audio stream type mismatch: expected " + typeof(T).Name);
+        }
+
+        /// <summary>
+        /// Load a video file from the Streaming folder.
+        /// </summary>
+        /// <param name="path"> The path to the file, relative to the Streaming folder. </param>
+        /// <returns> The loaded video as an Godot VideoStreamTheora object. </returns>
+        public static VideoStreamTheora LoadVideoStreaming(string path)
+        {
+            // Seems like VideoStream is not supported,
+            // must use VideoStreamTheora instead.
+            // Maybe Only VideoStreamTheora can be decoded currently.
+            return new VideoStreamTheora
+            {
+                File = Path.Combine(Root, path)
+            };
         }
     }
 

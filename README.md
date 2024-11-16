@@ -14,6 +14,8 @@
 * 轻量级全局管理类
 * 简易UI组件
 * 异步加载封装
+* 运行时加载器
+* 流媒体导出
 
 ## 更新计划
 
@@ -38,6 +40,8 @@ bytheway, the name **"GoDogKit"** is not a negative word, just a joke. **: )**
 * Lightweight Global Manager
 * Simple UI Components
 * Async Loading Encapsulation
+* Runtime Loader
+* Streaming Resources Exporter
 
 ## Update Plans
 

@@ -86,12 +86,22 @@ namespace GoDogKit
 
         #region ObjectPool
 
+        /// <summary>
+        /// Register this to the global object pool.
+        /// </summary>        
+        /// <param name="poolParent"> The parent of the pool. </param>
+        /// <param name="poolInitialSize"> The initial size of the pool. </param>
+        /// <returns> Itself </returns>
         public static PackedScene Register(this PackedScene scene, Node poolParent = null, int poolInitialSize = 10)
         {
             GlobalObjectPool.Register(scene, poolParent, poolInitialSize);
             return scene;
         }
 
+        /// <summary>
+        /// Unregister this from the global object pool.
+        /// </summary>
+        /// <returns> Itself </returns>
         public static PackedScene Unregister(this PackedScene scene)
         {
             GlobalObjectPool.Unregister(scene);
@@ -122,12 +132,21 @@ namespace GoDogKit
 
         #region Audio
 
+        /// <summary>
+        /// Register this to the global audio manager.
+        /// </summary>        
+        /// <param name="bus"> The bus to register to. </param>
+        /// <returns> Itself </returns>
         public static AudioStream Register(this AudioStream stream, string bus = "Master")
         {
             GlobalAudioManager.Register(stream, bus);
             return stream;
         }
 
+        /// <summary>
+        /// Unregister this from the global audio manager.
+        /// </summary>        
+        /// <returns> Itself </returns>
         public static AudioStream Unregister(this AudioStream stream)
         {
             GlobalAudioManager.Unregister(stream);
