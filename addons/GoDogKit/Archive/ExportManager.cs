@@ -9,7 +9,7 @@ namespace GoDogKit
     public partial class ExportManager : EditorExportPlugin
     {
         private static string ExportPath;
-        public static readonly string StreamingFloderName = "Streaming";
+        public static readonly string StreamingFloderName = Archive.Streaming;
         public static bool HasStreamingFloder { get; private set; } = false;
         public static readonly string[] StreamingIgnoreExtensions
          = [".import"];
@@ -32,21 +32,10 @@ namespace GoDogKit
             {
                 // Record all the files' full-path in the Streaming folder and its subdirectories.
                 var paths = new List<string>();
+
                 RecordPaths(new DirectoryInfo(StreamingFloderName), ref paths);
 
-                // Copy all the files in the Streaming folder and its subdirectories to the export path.
-                foreach (var oldPath in paths)
-                {
-                    if (StreamingIgnoreExtensions.Any(ext => Path.GetExtension(oldPath) == ext))
-                        continue;
-
-                    var newPath = ExportPath + oldPath.Split(StreamingFloderName).Last();
-
-                    // GD.Print("Copying Streaming file: " + oldPath + " to " + newPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(newPath));
-
-                    File.Copy(oldPath, newPath, true);
-                }
+                ExportStreamingFiles(paths);
             }
         }
 
@@ -70,6 +59,24 @@ namespace GoDogKit
             foreach (var subdir in dir.GetDirectories())
             {
                 RecordPaths(subdir, ref paths);
+            }
+        }
+
+        private static void ExportStreamingFiles(List<string> paths)
+        {
+            // Copy all the files in the Streaming folder and its subdirectories to the export path.
+            foreach (var oldPath in paths)
+            {
+                // Ignore files with certain extensions.
+                if (StreamingIgnoreExtensions.Any(ext => Path.GetExtension(oldPath) == ext))
+                    continue;
+
+                var newPath = ExportPath + oldPath.Split(StreamingFloderName).Last();
+
+                // GD.Print("Copying Streaming file: " + oldPath + " to " + newPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(newPath));
+
+                File.Copy(oldPath, newPath, true);
             }
         }
 

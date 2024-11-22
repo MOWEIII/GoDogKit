@@ -49,7 +49,7 @@ namespace GoDogKit
 			}
 		}
 
-		public override void _EnterTree()
+		public override void _EnablePlugin()
 		{
 			AddNode("ObjectPool", "Node", "ObjectPool/ObjectPool.cs", "ObjectPool.png");
 			AddNode("AutoCamera2D", "Camera2D", "Camera/AutoCamera2D.cs", "AutoCamera2D.png");

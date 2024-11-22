@@ -69,19 +69,6 @@ namespace GoDogKit
     /// </summary>
     public static class RuntimeLoader
     {
-        public static string Root { get; private set; }
-
-        static RuntimeLoader()
-        {
-            if (OS.HasFeature("editor"))
-            {
-                Root = "Streaming";
-            }
-            else
-            {
-                Root = OS.GetExecutablePath().GetBaseDir();
-            }
-        }
         /// <summary>
         /// Loads a resource from the given path asynchronously and returns a LoadTask object
         /// that can be used to track the progress and result of the load operation.
@@ -107,7 +94,7 @@ namespace GoDogKit
         /// <returns> A Task that can be awaited to get the contents of the file as a string. </returns> 
         public static Task<string> LoadStreaming(string path)
         {
-            return File.ReadAllTextAsync(Path.Combine(Root, path));
+            return File.ReadAllTextAsync(Path.Combine(Archive.Streaming, path));
         }
 
         /// <summary>
@@ -118,7 +105,7 @@ namespace GoDogKit
         public static Image LoadImageStreaming(string path)
         {
             var image = new Image();
-            image.Load(Path.Combine(Root, path));
+            image.Load(Path.Combine(Archive.Streaming, path));
             return image;
         }
 
@@ -129,18 +116,18 @@ namespace GoDogKit
         /// <returns> The loaded audio as an Godot AudioStream object. </returns>
         public static AudioStream LoadAudioStreaming(string path)
         {
-            if (!Path.Exists(Path.Combine(Root, path)))
+            if (!Path.Exists(Path.Combine(Archive.Streaming, path)))
                 throw new System.Exception("Audio file not found: " + path);
 
             var extension = Path.GetExtension(path).ToLower() ?? throw new System.Exception("File extension needed : " + path);
 
             return extension switch
             {
-                ".mp3" => new AudioStreamMP3() { Data = File.ReadAllBytes(Path.Combine(Root, path)) },
+                ".mp3" => new AudioStreamMP3() { Data = File.ReadAllBytes(Path.Combine(Archive.Streaming, path)) },
 
-                ".wav" => new AudioStreamWav() { Data = File.ReadAllBytes(Path.Combine(Root, path)) },
+                ".wav" => new AudioStreamWav() { Data = File.ReadAllBytes(Path.Combine(Archive.Streaming, path)) },
 
-                ".ogg" => AudioStreamOggVorbis.LoadFromFile(Path.Combine(Root, path)),
+                ".ogg" => AudioStreamOggVorbis.LoadFromFile(Path.Combine(Archive.Streaming, path)),
 
                 _ => throw new System.Exception("Unsupported audio format: " + Path.GetExtension(path)),
             };
@@ -165,7 +152,7 @@ namespace GoDogKit
             // Maybe Only VideoStreamTheora can be decoded currently.
             return new VideoStreamTheora
             {
-                File = Path.Combine(Root, path)
+                File = Path.Combine(Archive.Streaming, path)
             };
         }
     }

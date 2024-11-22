@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -73,7 +72,9 @@ namespace GoDogKit
         public static DirectoryInfo DefaultSaveDirectory { get; set; }
         public static string DefaultSaveFileName { get; set; } = "sg";
         public static string DefaultSaveFileExtension { get; set; } = ".data";
-        public static SaveEncryption DefaultEncryption { get; set; } = SaveEncryption.Default;
+        public static Encryption DefaultEncryption { get; set; } = Encryption.None;
+        public static bool DefaultEnvironmentSync { get; set; } = false;
+
         static SaveSystem()
         {
             if (OS.HasFeature("editor"))
@@ -95,12 +96,12 @@ namespace GoDogKit
             // }
         }
 
-        public static string Encrypt(string data, SaveEncryption encryption)
+        public static string Encrypt(string data, Encryption encryption)
         {
             return encryption.Encrypt(data);
         }
 
-        public static string Decrypt(string data, SaveEncryption encryption)
+        public static string Decrypt(string data, Encryption encryption)
         {
             return encryption.Decrypt(data);
         }
@@ -174,7 +175,8 @@ namespace GoDogKit
         public DirectoryInfo SaveDirectory { get; set; } = SaveSystem.DefaultSaveDirectory;
         public string SaveFileName { get; set; } = SaveSystem.DefaultSaveFileName;
         public string SaveFileExtension { get; set; } = SaveSystem.DefaultSaveFileExtension;
-        public SaveEncryption Encryption { get; set; } = SaveSystem.DefaultEncryption;
+        public Encryption Encryption { get; set; } = SaveSystem.DefaultEncryption;
+        public bool EnvironmentSync { get; set; } = SaveSystem.DefaultEnvironmentSync;
 
         public abstract string Serialize(ISaveable saveable);
 
@@ -360,45 +362,5 @@ namespace GoDogKit
         }
     }
 
-    #endregion
-
-    #region Encryption
-
-    public abstract class SaveEncryption
-    {
-        public abstract string Encrypt(string data);
-
-        public abstract string Decrypt(string data);
-
-        public static NoneEncryption Default { get; } = new NoneEncryption();
-    }
-
-    public class NoneEncryption : SaveEncryption
-    {
-        public override string Encrypt(string data) => data;
-
-        public override string Decrypt(string data) => data;
-    }
-
-    /// <summary>
-    /// Encryption method in negation.
-    /// </summary>
-    public class NegationEncryption : SaveEncryption
-    {
-        public override string Encrypt(string data)
-        {
-            byte[] bytes = Encoding.Unicode.GetBytes(data);
-
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = (byte)~bytes[i];
-            }
-
-            return Encoding.Unicode.GetString(bytes);
-        }
-
-        public override string Decrypt(string data) => Encrypt(data);
-    }
-
-    #endregion
+    #endregion    
 }
