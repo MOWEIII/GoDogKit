@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Godot;
 
@@ -6,6 +7,7 @@ namespace GoDogKit
     /// <summary>
     /// A highly customizable camera that automatically follows a target.
     /// </summary>
+    [Obsolete(@"This class is too useless, Recommend 'PhantomCamera' plugin instead.")]
     public partial class AutoCamera2D : Camera2D
     {
         /// <summary>
@@ -28,14 +30,14 @@ namespace GoDogKit
             Normal,
             /// <summary>
             /// Smoothly follows the target in a given duration. Results in global position interpolation.
-            /// </summary>            
+            /// </summary>          
             Inching,
             /// <summary>
             /// Follow the target with a constant speed. It can be faster or slower than the target's speed.
             /// If the follow speed equals or exceeds the target's speed, results just like the Normal behaviour.
             /// If the follow speed is slower than the target's speed, the camera will
             /// be clamped within a given distance from the target aka max distance.
-            /// </summary>            
+            /// </summary>
             Slow,
             /// <summary>
             /// Follow the target with predictive behaviour.
@@ -150,7 +152,7 @@ namespace GoDogKit
             while (timer < duration)
             {
                 timer += frequency;
-                GlobalPosition += Extensions.RandomShpere(magnitude);
+                GlobalPosition += MathUtility.RandomCircle(magnitude);
                 yield return new WaitForSeconds(frequency);
             }
 

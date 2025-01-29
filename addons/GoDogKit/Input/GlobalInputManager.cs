@@ -2,11 +2,18 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-namespace GoDogKit
+namespace GoDogKit;
+
+public enum InputMode
 {
-    public partial class GlobalInputManager : Singleton<GlobalInputManager>
-    {
-        private readonly static Dictionary<Type, InputMode> m_InputModeMap = new()
+    KeyboardAndMouse,
+    Gamepad,
+    Screen
+}
+
+public partial class GlobalInputManager : Node
+{
+    private readonly static Dictionary<Type, InputMode> m_InputModeMap = new()
         {
             {typeof(InputEventKey), InputMode.KeyboardAndMouse },
             {typeof(InputEventMouseButton), InputMode.KeyboardAndMouse },
@@ -19,25 +26,25 @@ namespace GoDogKit
             {typeof(InputEventScreenDrag), InputMode.Screen },
         };
 
-        public static InputMode CurrentInputMode { get; set; }
-        private static InputMode m_PreviousInputMode;
-        public static event Action<InputMode> InputModeChanged = delegate { };
+    public static InputMode CurrentInputMode { get; set; }
+    private static InputMode m_PreviousInputMode;
+    public static event Action<InputMode> InputModeChanged = delegate { };
 
-        public override void _Input(InputEvent @event)
+    public override void _Input(InputEvent @event)
+    {
+        DetectInputMode(@event);
+    }
+
+    private static void DetectInputMode(InputEvent @event)
+    {
+        if (!m_InputModeMap.TryGetValue(@event.GetType(), out InputMode inputMode)) return;
+
+        if (inputMode != m_PreviousInputMode)
         {
-            DetectInputMode(@event);
-        }
-
-        private static void DetectInputMode(InputEvent @event)
-        {
-            if (!m_InputModeMap.TryGetValue(@event.GetType(), out InputMode inputMode)) return;
-
-            if (inputMode != m_PreviousInputMode)
-            {
-                InputModeChanged.Invoke(CurrentInputMode);
-                m_PreviousInputMode = CurrentInputMode = inputMode;
-            }
+            InputModeChanged.Invoke(CurrentInputMode);
+            m_PreviousInputMode = CurrentInputMode = inputMode;
         }
     }
 }
+
 
