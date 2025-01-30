@@ -136,7 +136,9 @@ public partial class ObjectPool : Node
     {
         if (!m_queue.TryDequeue(out Node node))
         {
-            node = Instantiate();
+            // Instantiates one more for dequeue.
+            Instantiate();
+            node = m_queue.Dequeue();
         }
 
         EmitSignal(SignalName.Got, node);

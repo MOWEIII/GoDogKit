@@ -1,31 +1,32 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace GoDogKit;
 
+#region Coroutine
 /// <summary>
-/// Represents a coroutine, used a IEnumerator to represent the coroutine's logic.
+/// Represents a coroutine, used an IEnumerator to represent the coroutine's logic
+/// aka iterator methods.
+/// <para> Notice that the GoDogKit Coroutine is working on the same thread. </para>
+/// <para> The coroutines follows "fire-and-forget" logic, which means you should only
+/// create a new coroutine for every uses. </para>
 /// </summary>
-public class Coroutine
+public class Coroutine(IEnumerator enumerator, bool autoStart = true)
 {
-    private readonly IEnumerator m_enumerator;
-    private bool m_isRunning;
-    private bool m_isDone;
+    private readonly IEnumerator m_enumerator = enumerator;
+    private bool m_isRunning = autoStart;
+    private bool m_isDone = false;
 
-    public Coroutine(IEnumerator enumerator, bool autoStart = true)
-    {
-        m_enumerator = enumerator;
-        m_isRunning = autoStart;
-        m_isDone = false;
-    }
-
-    public Coroutine(IEnumerable enumerable, bool autoStart = true)
-    {
-        m_enumerator = enumerable.GetEnumerator();
-        m_isRunning = autoStart;
-        m_isDone = false;
-    }
+    // Support only constructed with enumerator for easier maintains.
+    // public Coroutine(IEnumerable enumerable, bool autoStart = true)
+    // {
+    //     m_enumerator = enumerable.GetEnumerator();
+    //     m_isRunning = autoStart;
+    //     m_isDone = false;
+    // }
 
     /// <summary>
     /// Make coroutine processable.
@@ -36,7 +37,7 @@ public class Coroutine
     }
 
     /// <summary>
-    /// What process do is actually enumerates all "yield return" in a "enumerator function" which 
+    /// What process do is actually enumerates all "yield return" in a "iterator method" which 
     /// constructs this coroutine. So you can put this function in any logics loop with
     /// a delta time parameter to update the coroutine's state in your preferred ways.
     /// </summary>
@@ -59,7 +60,7 @@ public class Coroutine
         {
             if (coroutine.IsDone())
             {
-                MoveNextAndCheck();
+                MoveNextAndCheck(); return;
             }
 
             coroutine.Process(delta);
@@ -67,7 +68,7 @@ public class Coroutine
         }
         else
         {
-            MoveNextAndCheck();
+            MoveNextAndCheck(); return;
         }
         // // If coroutine is not started or already done, do nothing
         // if (!m_processable || m_isDone) return;
@@ -92,7 +93,6 @@ public class Coroutine
         //     m_processable = false;
         //     m_isDone = true;
         // }
-
     }
 
     /// <summary>
@@ -136,19 +136,13 @@ public class Coroutine
     public virtual bool IsDone() => m_isDone;
 }
 
-/// <summary>
-/// Used for stun a coroutine in a certain duration.
-/// </summary>
-public class WaitForSeconds(double duration) : Coroutine(enumerator: null, autoStart: true)
-{
-    private double m_currentTime = 0;
-    public override void Process(double delta) => m_currentTime += delta;
-    public override bool IsDone() => m_currentTime >= duration;
-}
+#endregion
+
+#region Coroutine Launcher
 
 /// <summary>
 /// A wrapper for managing coroutines as a container.
-/// It can only be used in code, not added to a node.
+/// It can only be used in code, not be added to a node.
 /// </summary>
 public sealed class CoroutineLauncher
 {
@@ -223,8 +217,9 @@ public sealed class CoroutineLauncher
         return coroutine;
     }
 
-    public Coroutine StartCoroutine(IEnumerator enumerator)
-    => StartCoroutine(new Coroutine(enumerator));
+    //For a better maintains, stop using additional start mthods.
+    // public Coroutine StartCoroutine(IEnumerator enumerator)
+    // => StartCoroutine(new Coroutine(enumerator));
 
     public void StopCoroutine(Coroutine coroutine)
     {
@@ -263,3 +258,51 @@ public sealed class CoroutineLauncher
         }
     }
 }
+
+#endregion   
+
+#region Wait For Seconds
+
+/// <summary>
+/// Used for stun a coroutine in a certain duration.
+/// </summary>
+public class WaitForSeconds(double duration) : Coroutine(enumerator: null, autoStart: true)
+{
+    private double m_currentTime = 0;
+    public override void Process(double delta) => m_currentTime += delta;
+    public override bool IsDone() => m_currentTime >= duration;
+}
+
+#endregion
+
+#region Wait For InputAction
+
+public abstract class WaitForBool(Func<bool> func) : Coroutine(enumerator: null, autoStart: true)
+{
+    protected readonly Func<bool> m_func = func;
+    // Should do nothing but waiting.
+    public override void Process(double delta) { }
+    public override bool IsDone() => m_func();
+}
+
+public abstract class WaitForInputAction(string action, Func<bool> func) : WaitForBool(func: func)
+{
+    protected readonly string m_action = action;
+}
+
+public class WaitForInputActionPressed(string action)
+: WaitForInputAction(action, func: () => Input.IsActionPressed(action));
+
+public class WaitForInputActionJustPressed(string action)
+: WaitForInputAction(action, func: () => Input.IsActionJustPressed(action));
+
+public class WaitForInputActionJustReleased(string action)
+: WaitForInputAction(action, func: () => Input.IsActionJustReleased(action));
+
+#endregion
+
+#region  Wait For Signal
+
+
+
+#endregion

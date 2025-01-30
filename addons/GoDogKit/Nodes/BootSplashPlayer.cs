@@ -1,3 +1,4 @@
+//TODO: This file is deprecated. Waiting on next update...
 using Godot;
 
 namespace GoDogKit;

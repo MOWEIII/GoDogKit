@@ -2,44 +2,47 @@ using Godot;
 
 namespace GoDogKit;
 
-public static class AudioUtility
+/// <summary>
+/// Provides shortcuts of GlobalObjectPool. And other utilities.
+/// </summary>
+public static class AudioKit
 {
     /// <summary>
-    /// Register this to the global audio manager.
+    /// Register this to the GlobalAudioManager.
     /// </summary>
     /// <param name="bus"> The bus to register to. </param>
     /// <returns> Itself </returns>
     public static AudioStream Register(this AudioStream stream, string bus = "Master")
     {
-        GlobalUtility.AudioManager.Register(stream, bus);
+        Global.AudioManager.Register(stream, bus);
         return stream;
     }
 
     /// <summary>
-    /// Unregister this from the global audio manager.
+    /// Unregister this from the GlobalAudioManager.
     /// </summary>        
     /// <returns> Itself </returns>
     public static AudioStream Unregister(this AudioStream stream)
     {
-        GlobalUtility.AudioManager.Unregister(stream);
+        Global.AudioManager.Unregister(stream);
         return stream;
     }
 
     /// <summary>
-    /// Play this stream from the global audio manager.
+    /// Play this stream from the GlobalAudioManager.
     /// </summary>    
     public static void Play(this AudioStream stream)
-    => GlobalUtility.AudioManager.Play(stream);
+    => Global.AudioManager.Play(stream);
 
     /// <summary>
-    /// Stop playing this stream from the global audio manager.
+    /// Stop playing this stream from the GlobalAudioManager.
     /// </summary>
     public static void Stop(this AudioStream stream)
-    => GlobalUtility.AudioManager.Stop(stream);
+    => Global.AudioManager.Stop(stream);
 
     /// <summary>
-    /// Get the player of this stream from the global audio manager.
+    /// Get the player of this stream from the GlobalAudioManager.
     /// </summary>
     public static AudioStreamPlayer GetPlayer(this AudioStream stream)
-    => GlobalUtility.AudioManager.GetPlayer(stream);
+    => Global.AudioManager.GetPlayer(stream);
 }

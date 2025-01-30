@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Godot;
 
@@ -6,14 +7,30 @@ namespace GoDogKit;
 /// <summary>
 /// Aim to Simplify the usages of Coroutine.
 /// </summary>
-public static class CoroutineUtility
+public static class CoroutineKit
 {
     /// <summary>
     /// Start a coroutine by GlobalCoroutineLauncher.
     /// </summary>    
     public static void StartCoroutine(this Node node, Coroutine coroutine)
     {
-        GlobalUtility.CoroutineLauncher.StartCoroutine(coroutine);
+        Global.CoroutineLauncher.StartCoroutine(coroutine);
+    }
+
+    /// <summary>
+    /// Start a coroutine by GlobalCoroutineLauncher.
+    /// </summary>
+    public static void StartCoroutine(this Node node, Func<IEnumerator> iterator)
+    {
+        StartCoroutine(node, new Coroutine(iterator()));
+    }
+
+    /// <summary>
+    /// Start a coroutine by GlobalCoroutineLauncher.
+    /// </summary>
+    public static void StartCoroutine(this Node node, Func<IEnumerable> iterator)
+    {
+        StartCoroutine(node, iterator().GetEnumerator());
     }
 
     /// <summary>
@@ -37,12 +54,12 @@ public static class CoroutineUtility
     /// </summary>    
     public static void StopCoroutine(this Node node, Coroutine coroutine)
     {
-        GlobalUtility.CoroutineLauncher.StopCoroutine(coroutine);
+        Global.CoroutineLauncher.StopCoroutine(coroutine);
     }
 
     /// <summary>
     /// Get the coroutines' info of the GlobalCoroutineLauncher.
     /// </summary>
     public static CoroutineLauncher.CoroutineLaunchInfo GetGlobalInfo()
-    => GlobalUtility.CoroutineLauncher.GetInfo();
+    => Global.CoroutineLauncher.GetInfo();
 }

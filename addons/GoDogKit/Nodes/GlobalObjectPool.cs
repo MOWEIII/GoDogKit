@@ -5,11 +5,11 @@ namespace GoDogKit;
 
 /// <summary>
 /// A Global Manager for Object Pools, Maintains links between PackedScenes and their corresponding m_ObjectPools.
-/// Provides methods to register, unregister, get and release objects from object pools.
+/// Provides methods to register, unregister PackedScenes, get and release objects from object pools.
 /// </summary>
-public partial class GlobalObjectPool : Node
+public partial class GlobalObjectPool : GlobalNode
 {
-    private readonly Dictionary<PackedScene, ObjectPool> m_ObjectPools = [];
+    private readonly Dictionary<PackedScene, ObjectPool> m_objectPools = [];
 
     /// <summary>
     /// Registers a PackedScene to the GlobalObjectPool.
@@ -19,7 +19,7 @@ public partial class GlobalObjectPool : Node
     /// <param name="poolInitialSize"> The initial size of the ObjectPool. </param>
     public void Register(PackedScene scene, Node poolParent = null, int poolInitialSize = 10)
     {
-        if (m_ObjectPools.ContainsKey(scene))
+        if (m_objectPools.ContainsKey(scene))
         {
             // GD.Print(scene.ResourceName + " already registered to GlobalObjectPool.");
             return;
@@ -28,13 +28,13 @@ public partial class GlobalObjectPool : Node
         ObjectPool pool = new()
         {
             Scene = scene,
-            // Parent = poolParent,
+            Parent = poolParent,
             InitialSize = poolInitialSize
         };
 
         AddChild(pool);
 
-        m_ObjectPools.Add(scene, pool);
+        m_objectPools.Add(scene, pool);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial class GlobalObjectPool : Node
     /// <param name="scene"> The PackedScene to unregister. </param>
     public void Unregister(PackedScene scene)
     {
-        if (!m_ObjectPools.TryGetValue(scene, out ObjectPool pool))
+        if (!m_objectPools.TryGetValue(scene, out ObjectPool pool))
         {
             // GD.Print(scene.ResourceName + " not registered to GlobalObjectPool.");
             return;
@@ -51,16 +51,16 @@ public partial class GlobalObjectPool : Node
 
         pool.Destroy();
 
-        m_ObjectPools.Remove(scene);
+        m_objectPools.Remove(scene);
     }
 
     //Just for simplify coding. Ensure the pool has always been registered.
     private ObjectPool ForceGetPool(PackedScene scene)
     {
-        if (!m_ObjectPools.TryGetValue(scene, out ObjectPool pool))
+        if (!m_objectPools.TryGetValue(scene, out ObjectPool pool))
         {
             Register(scene);
-            pool = m_ObjectPools[scene];
+            pool = m_objectPools[scene];
         }
 
         return pool;
@@ -102,12 +102,12 @@ public partial class GlobalObjectPool : Node
     /// </summary>
     public void UnregisterAll()
     {
-        foreach (var pool in m_ObjectPools.Values)
+        foreach (var pool in m_objectPools.Values)
         {
             pool.Destroy();
         }
 
-        m_ObjectPools.Clear();
+        m_objectPools.Clear();
     }
 
     /// <summary>

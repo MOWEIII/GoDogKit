@@ -1,6 +1,3 @@
-using System.Collections;
-using Godot;
-
 namespace GoDogKit;
 
 /// <summary>
@@ -20,10 +17,10 @@ public enum CoroutineProcessMode
 
 /// <summary>
 /// Aim to simplify coroutine management,
-/// all coroutines inside are processed with the node instance.
-/// It will be automatically created and added into scene tree root if used.
+/// all coroutines started by are processed with the GlobalCoroutineLauncher node instance.
+/// <para> It will be automatically created and added into scene tree root if used. </para>
 /// </summary>
-public partial class GlobalCoroutineLauncher : Node
+public partial class GlobalCoroutineLauncher : GlobalNode
 {
     private readonly CoroutineLauncher m_launcher = new();
     /// <summary>
@@ -44,10 +41,9 @@ public partial class GlobalCoroutineLauncher : Node
 
     public CoroutineLauncher.CoroutineLaunchInfo GetInfo() => m_launcher.GetInfo();
     public void StartCoroutine(Coroutine coroutine) => m_launcher.StartCoroutine(coroutine);
-    public void StartCoroutine(IEnumerator enumerator) => m_launcher.StartCoroutine(enumerator);
     public void StopCoroutine(Coroutine coroutine) => m_launcher.StopCoroutine(coroutine);
     public void StartAllCoroutines() => m_launcher.StartAllCoroutines();
-    public void StopAllCoroutines() => m_launcher.StopAllCoroutines();    
+    public void StopAllCoroutines() => m_launcher.StopAllCoroutines();
 
     //     private readonly List<Coroutine> m_ProcessCoroutines = [];
     //     private readonly List<Coroutine> m_PhysicsProcessCoroutines = [];
@@ -78,7 +74,6 @@ public partial class GlobalCoroutineLauncher : Node
     //                 break;
     //         }
     //     }
-
 
     //     // It batter to use IEnumerator to identify the coroutine instead of Coroutine itself.
     //     public static void RemoveCoroutine(IEnumerator enumerator)
@@ -151,5 +146,3 @@ public partial class GlobalCoroutineLauncher : Node
     //     + Instance.m_PhysicsProcessCoroutines.Count;
     // }
 }
-
-

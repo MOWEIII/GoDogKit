@@ -1,3 +1,5 @@
+//TODO: This file is deprecated. Waiting on next update...
+#if DEPRECATED
 using System;
 using System.Collections;
 using Godot;
@@ -189,3 +191,4 @@ namespace GoDogKit
     }
 }
 
+#endif

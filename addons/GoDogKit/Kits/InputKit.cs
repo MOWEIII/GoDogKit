@@ -8,18 +8,11 @@ namespace GoDogKit;
 /// <summary>
 /// Provides additional input detect methods base on the Godot.
 /// </summary>
-public static class InputUtility
+public static class InputKit
 {
-    private static readonly Dictionary<string, ulong> m_pressed_caches;
-    private static readonly Dictionary<string, (int, ulong)> m_pressed_count_caches;
-    private static readonly Dictionary<string, (int, ulong)> m_released_count_caches;
-
-    static InputUtility()
-    {
-        m_pressed_caches = [];
-        m_pressed_count_caches = [];
-        m_released_count_caches = [];
-    }
+    private static readonly Dictionary<string, ulong> m_pressed_caches = [];
+    private static readonly Dictionary<string, (int, ulong)> m_pressed_count_caches = [];
+    private static readonly Dictionary<string, (int, ulong)> m_released_count_caches = [];
 
     // Returns in seconds.
     private static double GetElapseFrom(ulong ticks)
@@ -61,6 +54,7 @@ public static class InputUtility
     /// Return true if an action was pressed and held for *at least* a given duration in seconds,
     /// and right after the action released. It's considered as a delay version of 
     /// IsActionJustReleased().
+    /// <para> Only trigger once after timeout. </para>
     /// return false if not.
     /// </summary>
     public static bool IsActionPressedForSeconds(string action, float seconds)
@@ -75,6 +69,7 @@ public static class InputUtility
     /// Return true if an action was just pressed and held for *at least* a given duration in seconds,
     /// and right after duration reached the end. It's considered as a delay version of 
     /// IsActionJustPressed().
+    /// <para> Only trigger once after timeout. </para>
     /// return false if not.
     /// </summary>
     public static bool IsActionJustPressedForSeconds(string action, float seconds)
@@ -196,7 +191,7 @@ public static class InputUtility
     /// </summary>    
     public static void SaveInputMapConfig(string path)
     {
-        ArchiveUtility.EnsurePathExists(path);
+        ArchiveKit.EnsurePathExists(path);
 
         using ConfigFile file = new();
 
@@ -216,7 +211,7 @@ public static class InputUtility
     /// </summary> 
     public static void LoadInputMapConfig(string path)
     {
-        ArchiveUtility.EnsurePathExists(path);
+        ArchiveKit.EnsurePathExists(path);
 
         using ConfigFile file = new();
 

@@ -6,21 +6,15 @@ namespace GoDogKit;
 /// <summary>
 /// Global manager for non-spatial audio (Watch-out! This is not a spatial audio manager).
 /// All AudioStream resources being registered can play globally.
-/// It will be automatically created and added into scene tree root if used.
+/// <para> It will be automatically created and added into scene tree root if used. </para>
 /// </summary>
-public partial class GlobalAudioManager : Node
+public partial class GlobalAudioManager : GlobalNode
 {
     private readonly Dictionary<AudioStream, AudioStreamPlayer> m_players = [];
 
-    public readonly float MaxDb = 20f;
+    public const float MaxDb = 20f;
 
-    public readonly float MinDb = -20f;
-
-    // public override void _Ready()
-    // {
-    //     AudioServer.SetBusLayout
-    //     (ResourceLoader.Load<AudioBusLayout>(GoDogKitManager.GoDogKitFolderPath + "/Audio/DefaultBusLayout.tres"));
-    // }
+    public const float MinDb = -20f;
 
     /// <summary>
     /// Registers an audio stream to the global audio manager.

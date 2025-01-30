@@ -5,7 +5,7 @@ namespace GoDogKit;
 
 /// <summary>
 /// A safe version of ObjectPool, provides security checks while release or free.
-/// The node managed by a ManagedPool can use relative extension methods to simplify works.
+/// The node managed by a ManagedPool can uses relative extension methods to simplify works.
 /// </summary>
 [GlobalClass]
 [Icon(GoDogKitManager.GoDogKitIconFolderPath + "ManagedPool.png")]

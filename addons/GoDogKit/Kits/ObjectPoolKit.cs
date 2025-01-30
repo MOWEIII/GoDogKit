@@ -2,7 +2,10 @@ using Godot;
 
 namespace GoDogKit;
 
-public static class ObjectPoolUtility
+/// <summary>
+/// Provides shortcuts of GlobalObjectPool. And other utilities.
+/// </summary>
+public static class ObjectPoolKit
 {
     /// <summary>
     /// Create a new ObjectPool node with this PackedScene.
@@ -34,7 +37,7 @@ public static class ObjectPoolUtility
     /// Release this node, if it's managed by a ManagedPool.
     /// </summary>    
     /// <returns> Whether the node is released successfully. </returns>
-    public static bool TryRelease(this Node node)
+    public static bool ReleaseToManagedPool(this Node node)
     {
         if (ManagedPool.ManagedMap.TryGetValue(node, out ManagedPool pool))
         {
@@ -49,7 +52,7 @@ public static class ObjectPoolUtility
     /// Free this node, if it's managed by a ManagedPool.
     /// </summary>    
     /// <returns> Whether the node is free successfully. </returns>
-    public static bool TryFree(this Node node)
+    public static bool FreeByManagedPool(this Node node)
     {
         if (ManagedPool.ManagedMap.TryGetValue(node, out var pool))
         {
@@ -66,9 +69,9 @@ public static class ObjectPoolUtility
     /// <param name="poolParent"> The parent of the pool. </param>
     /// <param name="poolInitialSize"> The initial size of the pool. </param>
     /// <returns> Itself </returns>
-    public static PackedScene RegisterGlobally(this PackedScene scene, Node poolParent = null, int poolInitialSize = 10)
+    public static PackedScene RegisterToGlobalObjectPool(this PackedScene scene, Node poolParent = null, int poolInitialSize = 10)
     {
-        GlobalUtility.ObjectPool.Register(scene, poolParent, poolInitialSize);
+        Global.ObjectPool.Register(scene, poolParent, poolInitialSize);
         return scene;
     }
 
@@ -76,22 +79,18 @@ public static class ObjectPoolUtility
     /// Unregister this from the global object pool.
     /// </summary>
     /// <returns> Itself </returns>    
-    public static PackedScene UnregisterGlobally(this PackedScene scene)
+    public static PackedScene UnregisterFromGlobalObjectPool(this PackedScene scene)
     {
-        GlobalUtility.ObjectPool.Unregister(scene);
+        Global.ObjectPool.Unregister(scene);
         return scene;
     }
 
-    public static Node GetGlobally(this PackedScene scene)
-    => GlobalUtility.ObjectPool.Get(scene);
+    public static T GetFromGlobalObjectPool<T>(this PackedScene scene) where T : Node
+    => Global.ObjectPool.Get<T>(scene);
 
-    public static T GetGlobally<T>(this PackedScene scene) where T : Node
-    => GetGlobally(scene) as T;
+    public static void ReleaseToGlobalObjectPool(this PackedScene scene, Node node)
+    => Global.ObjectPool.Release(scene, node);
 
-    public static void ReleaseGlobally(this PackedScene scene, Node node)
-    => GlobalUtility.ObjectPool.Release(scene, node);
-
-    public static ObjectPool GetPoolGlobally(this PackedScene scene)
-    => GlobalUtility.ObjectPool.GetPool(scene);
-
+    public static ObjectPool GetGlobalObjectPool(this PackedScene scene)
+    => Global.ObjectPool.GetPool(scene);
 }

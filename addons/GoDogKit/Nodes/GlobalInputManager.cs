@@ -11,7 +11,7 @@ public enum InputMode
     Screen
 }
 
-public partial class GlobalInputManager : Node
+public partial class GlobalInputManager : GlobalNode
 {
     private readonly static Dictionary<Type, InputMode> m_InputModeMap = new()
         {

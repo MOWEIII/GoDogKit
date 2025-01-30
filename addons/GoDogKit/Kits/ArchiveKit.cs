@@ -6,7 +6,7 @@ using FileAccess = Godot.FileAccess;
 
 namespace GoDogKit;
 
-public static class ArchiveUtility
+public static class ArchiveKit
 {
     public static string ExeDirectory { get => Path.GetDirectoryName(OS.GetExecutablePath()); }
 
@@ -44,6 +44,11 @@ public static class ArchiveUtility
         return path;
     }
 
+    /// <summary>
+    /// Read a .csv file and return by lines.
+    /// </summary>
+    /// <param name="ignoreFirstLine"> Whether skip the first line while reading. </param>
+    /// <returns> A List of lines. </returns>
     public static List<string[]> CsvReadLines(string path, bool ignoreFirstLine = true)
     {
         var list = new List<string[]>();
@@ -62,6 +67,10 @@ public static class ArchiveUtility
         return list;
     }
 
+    /// <summary>
+    /// Process a .csv file by lines.
+    /// </summary>    
+    /// <returns> True if process successfully end. </returns>
     public static bool CsvProcessLines(List<string[]> data, Action<string[]> callback)
     {
         if (data == null || data.Count == 0)

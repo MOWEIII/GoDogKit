@@ -1,52 +1,78 @@
-# 走狗工具集
-
-## 介绍
-
-一个用于Godot开发的工具集，主要内容是个人开发时积累下来的轮子，后续 **“可能”** 还会继续更新。直接把addons文件夹复制粘贴到Godot项目中就可以使用了。
-
-还有，名字虽然叫 **“走狗工具集”**，但不是贬义，只是个谐音梗哈哈。
-
-## 目前功能
-
-* 自定义2D相机
-* 简易对象池
-* 轻量级协程
-* 轻量级全局管理类
-* 简易UI组件
-* 异步加载封装
-* 运行时加载器
-* 流媒体导出
-
-## 更新计划
-
-* 加入更完备的对象池
-* 实现协程复用功能
-* 完善3D相机功能
-
 # GoDogKit
+
+[中文点这里](README_zh.md)
+
+`Godot 4.0`
+`.NET 8.0`
 
 ## Introduction
 
-A Plugin kit used by Godot which personally used and  **"maybe"** continue to be update.
-Easy to use while just simpliy add the "addons" file into your Godot Project File.
+A lightweight, weak framework, library that provides optional tools to assist Godot C # development.
 
-bytheway, the name **"GoDogKit"** is not a negative word, just a joke. **: )**
+## Core Features
 
-## Features
+### *Optional:*
+All features in GoDogKit are initialized only when they are used, so there is no need to worry about the program structure becoming bloated.
+### *Lightweight coroutine support:*
+The coroutines in GoDogKit are very similar to those in Unity, but differ significantly from Godot's native coroutines, so if you are familiar with Unity, it is easy to get started.
 
-* Custom 2D Camera AutoCamera2D
-* Simple Object Pool
-* Lightweight Coroutine
-* Lightweight Global Manager
-* Simple UI Components
-* Async Loading Encapsulation
-* Runtime Loader
-* Streaming Resources Exporter
+    // Write a coroutine.
+    IEnumerator Attack()
+    {        
+        GD.Print("Wait for input!");
+        yield return new WaitForInputActionJustPressed("ui_left");
+        yield return new WaitForInputActionJustPressed("ui_up");
+        yield return new WaitForInputActionJustPressed("ui_right");
+        yield return new WaitForInputActionJustPressed("ui_down");
+        GD.Print("Attack!");        
+    }
 
-## Update Plans
+    // Call it.
+    public override void _Ready()
+    {       
+        this.StartCoroutine(Attack);
+    }
 
-* More Comprehensive Object Pool
-* Reusable Coroutine Functionality
-* Implement 3D Camera Functionality
+You can also implement your own coroutine by inheriting from the 'Coronine' class.
 
+### *Global management classes and global nodes:*
+Global classes in GoDogKit represent the same lifecycle as their objects and games. On this basis, the global class generates nodes with different functions and adds them to the scene tree to participate in the game process.
 
+Due to the confliction between global classes and [Godot best practices](https://docs.godotengine.org/zh-cn/4.x/tutorials/best_practices/index.html). All global functions are designed as optional features, and their corresponding nodes will only be loaded into the scene tree when they are used. Can be regarded as a type of 'defered' [`Autoload`](https://docs.godotengine.org/zh-cn/4.x/tutorials/scripting/singletons_autoload.html).
+
+    [Export] public PackedScene scene;
+
+    public override void _Ready()
+    {
+        // This will apply the GlobalSceneManager.
+        scene.RegisterToGlobalScenes("Level 1");
+    }
+
+    public override void _Input(InputEvent @event)
+	{
+		if(Input.IsActionJustReleased("ui_accept"))
+		{
+			SceneKit.GoToScene("Level 1");
+		}
+	}
+
+### *Plenty of (To be) Kits support:*
+
+    public override void _Input(InputEvent @event)
+	{
+		if(InputKit.IsActionJustReleasedContinuous("ui_accept", 3))
+		{
+			GD.Print("Tab me in three times!");
+		}
+
+		if(InputKit.IsActionJustPressedForSeconds("ui_accept", 3.0f))
+		{
+			GD.Print("Hold me at least 3 seconds!");
+		}
+	}
+
+## Recent updates and further plans
+### Recent updates
+* Join a more complete object pool `ManagedPool`
+### Plan
+* Further simplification and lightweighting

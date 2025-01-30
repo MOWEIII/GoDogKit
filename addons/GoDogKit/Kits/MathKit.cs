@@ -2,7 +2,7 @@ using Godot;
 
 namespace GoDogKit;
 
-public static class MathUtility
+public static class MathKit
 {
     public static Vector2 RandomCircle(float radius)
     {
