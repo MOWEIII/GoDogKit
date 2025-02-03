@@ -17,45 +17,50 @@ GoDogKit中的所有功能都只有在用到它们的时候才会初始化，所
 ### *轻巧的协程支持：*
 GoDogKit中的协程和Unity中的协程很相似，但和Godot原生的协程差别较大，所以如果你熟悉Unity的话，很容易上手。
 
-    // 编写一个协程方法
-    IEnumerator Attack()
-    {        
-        GD.Print("Wait for input!");
-        yield return new WaitForInputActionJustPressed("ui_left");
-        yield return new WaitForInputActionJustPressed("ui_up");
-        yield return new WaitForInputActionJustPressed("ui_right");
-        yield return new WaitForInputActionJustPressed("ui_down");
-        GD.Print("Attack!");        
-    }
+```csharp
+// 编写一个协程方法
+IEnumerator Attack()
+{        
+    GD.Print("Wait for input!");
+    yield return new WaitForInputActionJustPressed("ui_left");
+    yield return new WaitForInputActionJustPressed("ui_up");
+    yield return new WaitForInputActionJustPressed("ui_right");
+    yield return new WaitForInputActionJustPressed("ui_down");
+    GD.Print("Attack!");        
+}
 
-    // 调用协程
-    public override void _Ready()
-    {       
-        this.StartCoroutine(Attack);
-    }
+// 调用协程
+public override void _Ready()
+{       
+    this.StartCoroutine(Attack);
+}
+```
 你还可以通过继承`Coroutine`类实现自己的协程。
 ### *全局管理类与全局节点：*
 全局类在GoDogKit中代表其对象的生命周期和游戏相同。在此基础上全局类通过衍生出不同功能的节点加入场景树中，从而参与游戏流程。
 
 鉴于全局类和[Godot最佳实践](https://docs.godotengine.org/zh-cn/4.x/tutorials/best_practices/index.html)的冲突。全局功能全部设计为可选功能，只要它们在被使用时才会加载对应的节点到场景树中。可以视为一种“延迟”的[`Autoload`](https://docs.godotengine.org/zh-cn/4.x/tutorials/scripting/singletons_autoload.html)。
 
-    [Export] public PackedScene scene;
+```csharp
+[Export] public PackedScene scene;
 
-    public override void _Ready()
+public override void _Ready()
+{
+    // 这会激活全局场景管理器
+    scene.RegisterToGlobalScenes("Level 1");
+}
+
+public override void _Input(InputEvent @event)
+{
+    if(Input.IsActionJustReleased("ui_accept"))
     {
-        // 这会激活全局场景管理器
-        scene.RegisterToGlobalScenes("Level 1");
+        SceneKit.GoToScene("Level 1");
     }
+}
+```
 
-    public override void _Input(InputEvent @event)
-	{
-		if(Input.IsActionJustReleased("ui_accept"))
-		{
-			SceneKit.GoToScene("Level 1");
-		}
-	}
 ### *丰富的（其实不然）工具类和工具节点：*
-
+```csharp
     public override void _Input(InputEvent @event)
 	{
 		if(InputKit.IsActionJustReleasedContinuous("ui_accept", 3))
@@ -68,6 +73,7 @@ GoDogKit中的协程和Unity中的协程很相似，但和Godot原生的协程�
 			GD.Print("Hold me at least 3 seconds!");
 		}
 	}
+```
 
 ## 最近更新与计划
 ### 最近更新

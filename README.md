@@ -16,6 +16,7 @@ All features in GoDogKit are initialized only when they are used, so there is no
 ### *Lightweight coroutine support:*
 The coroutines in GoDogKit are very similar to those in Unity, but differ significantly from Godot's native coroutines, so if you are familiar with Unity, it is easy to get started.
 
+```csharp
     // Write a coroutine.
     IEnumerator Attack()
     {        
@@ -32,6 +33,7 @@ The coroutines in GoDogKit are very similar to those in Unity, but differ signif
     {       
         this.StartCoroutine(Attack);
     }
+```
 
 You can also implement your own coroutine by inheriting from the 'Coronine' class.
 
@@ -40,6 +42,7 @@ Global classes in GoDogKit represent the same lifecycle as their objects and gam
 
 Due to the confliction between global classes and [Godot best practices](https://docs.godotengine.org/zh-cn/4.x/tutorials/best_practices/index.html). All global functions are designed as optional features, and their corresponding nodes will only be loaded into the scene tree when they are used. Can be regarded as a type of 'defered' [`Autoload`](https://docs.godotengine.org/zh-cn/4.x/tutorials/scripting/singletons_autoload.html).
 
+```csharp
     [Export] public PackedScene scene;
 
     public override void _Ready()
@@ -55,21 +58,24 @@ Due to the confliction between global classes and [Godot best practices](https:/
 			SceneKit.GoToScene("Level 1");
 		}
 	}
+```
 
 ### *Plenty of (To be) Kits support:*
 
-    public override void _Input(InputEvent @event)
-	{
-		if(InputKit.IsActionJustReleasedContinuous("ui_accept", 3))
-		{
-			GD.Print("Tab me in three times!");
-		}
+```csharp
+public override void _Input(InputEvent @event)
+{
+    if(InputKit.IsActionJustReleasedContinuous("ui_accept", 3))
+    {
+        GD.Print("Tab me in three times!");
+    }
 
-		if(InputKit.IsActionJustPressedForSeconds("ui_accept", 3.0f))
-		{
-			GD.Print("Hold me at least 3 seconds!");
-		}
-	}
+    if(InputKit.IsActionJustPressedForSeconds("ui_accept", 3.0f))
+    {
+        GD.Print("Hold me at least 3 seconds!");
+    }
+}
+```
 
 ## Recent updates and further plans
 ### Recent updates
