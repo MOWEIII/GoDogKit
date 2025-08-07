@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace GoDogKit;
+namespace GoDogKit.Core;
 
 public abstract class Encryption
 {

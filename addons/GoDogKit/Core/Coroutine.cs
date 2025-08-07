@@ -4,29 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-namespace GoDogKit;
+namespace GoDogKit.Core;
 
 #region Coroutine
 /// <summary>
-/// Represents a coroutine, used an IEnumerator to represent the coroutine's logic
-/// aka iterator methods.
+/// Represent a coroutine, used an IEnumerator to represent the coroutine's logic aka iterator methods.
 /// <para> Notice that the GoDogKit Coroutine is working on the same thread. </para>
 /// <para> The coroutines follows "fire-and-forget" logic, which means you should only
-/// create a new coroutine for every uses. </para>
+/// create a new coroutine for every uses instead of reusing it. </para>
 /// </summary>
 public class Coroutine(IEnumerator enumerator, bool autoStart = true)
 {
     private readonly IEnumerator m_enumerator = enumerator;
     private bool m_isRunning = autoStart;
     private bool m_isDone = false;
-
-    // Support only constructed with enumerator for easier maintains.
-    // public Coroutine(IEnumerable enumerable, bool autoStart = true)
-    // {
-    //     m_enumerator = enumerable.GetEnumerator();
-    //     m_isRunning = autoStart;
-    //     m_isDone = false;
-    // }
 
     /// <summary>
     /// Make coroutine processable.
@@ -70,29 +61,6 @@ public class Coroutine(IEnumerator enumerator, bool autoStart = true)
         {
             MoveNextAndCheck(); return;
         }
-        // // If coroutine is not started or already done, do nothing
-        // if (!m_processable || m_isDone) return;
-
-        // // If coroutine process encounted a CoroutineTask, process it
-        // if (enumerator.Current is Coroutine coroutine)
-        // {
-        //     coroutine.Process(delta);
-
-        //     if (coroutine.IsDone())
-        //     {
-        //         enumerator.MoveNext();
-        //     }
-
-        //     // Return if current task haven't done
-        //     return;
-        // }
-
-        // // If there are no nested Coroutine, just move to the next yield of the coroutine's enumerator
-        // if (!enumerator.MoveNext())
-        // {
-        //     m_processable = false;
-        //     m_isDone = true;
-        // }
     }
 
     /// <summary>
@@ -100,22 +68,10 @@ public class Coroutine(IEnumerator enumerator, bool autoStart = true)
     /// </summary>
     public virtual void Pause() => m_isRunning = false;
 
-    // Using a new coroutine once a time, need no implement Reset method.
-    // /// <summary>
-    // /// Reset the coroutine, also means it's not done and not processable.
-    // /// </summary>
-    // public virtual void Reset()
-    // {
-    //     //TODO: iterator methods seems do not support Reset(), need to implement it manually            
-    //     // enumerator.Reset();
-    //     m_isDone = false;
-    //     m_processable = false;
-    // }
-
     /// <summary>
     /// Stop the coroutine, also means it's done.
     /// </summary>
-    public virtual void Stop() => m_isDone = true;
+    public virtual void Abort() => m_isDone = true;
 
     /// <summary>
     /// Get the enumerator which is used to construct this coroutine.
@@ -225,7 +181,7 @@ public sealed class CoroutineLauncher
     {
         if (m_coroutines.TryGetValue(coroutine, out Coroutine actual))
         {
-            actual.Stop();
+            actual.Abort();
         }
     }
 
@@ -254,14 +210,14 @@ public sealed class CoroutineLauncher
     {
         foreach (Coroutine coroutine in m_coroutines)
         {
-            coroutine.Stop();
+            coroutine.Abort();
         }
     }
 }
 
 #endregion   
 
-#region Wait For Seconds
+#region Wait For Duration
 
 /// <summary>
 /// Used for stun a coroutine in a certain duration.
@@ -298,11 +254,5 @@ public class WaitForInputActionJustPressed(string action)
 
 public class WaitForInputActionJustReleased(string action)
 : WaitForInputAction(action, func: () => Input.IsActionJustReleased(action));
-
-#endregion
-
-#region  Wait For Signal
-
-
 
 #endregion
