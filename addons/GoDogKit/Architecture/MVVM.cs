@@ -15,20 +15,17 @@ public interface IMVVMView
     public void Update();
 }
 
-public class MVVMViewModel
+public class MVVMViewModel<TView, TModel> where TView : IMVVMView where TModel : IMVVMModel
 {
-    public IMVVMView View { get; protected set; }
-    public IMVVMModel Model { get; protected set; }
-    public List<(PropertyInfo, PropertyInfo)> PropertiesMap { get; protected set; }
+    static public List<(PropertyInfo, PropertyInfo)> PropertiesMap { get; protected set; }
+    public Dictionary<TView, TModel> ViewModels { get; } = [];
 
-    public MVVMViewModel(IMVVMView view, IMVVMModel model)
+    static MVVMViewModel()
     {
-        View = view;
-        Model = model;
         PropertiesMap = [];
 
-        IEnumerable<PropertyInfo> viewProperties = GetMVVMProperties(View.GetType());
-        IEnumerable<PropertyInfo> modelProperties = GetMVVMProperties(Model.GetType());
+        IEnumerable<PropertyInfo> viewProperties = GetMVVMProperties(typeof(TView));
+        IEnumerable<PropertyInfo> modelProperties = GetMVVMProperties(typeof(TModel));
 
         for (int i = 0; i < viewProperties.Count(); i++)
         {
@@ -50,13 +47,27 @@ public class MVVMViewModel
      where property.GetCustomAttribute<MVVMPropertyAttribute>() != null
      select property;
 
-    public void Synchronize()
+    public void Bind(TView view, TModel model) => ViewModels.Add(view, model);
+
+    public bool UnBind(TView view) => ViewModels.Remove(view);
+
+    public void Synchronize(TView view)
     {
+        if (!ViewModels.TryGetValue(view, out TModel model)) return;
+
         foreach ((PropertyInfo viewProperty, PropertyInfo modelProperty) in PropertiesMap)
         {
-            viewProperty.SetValue(View, modelProperty.GetValue(Model));
+            viewProperty.SetValue(view, modelProperty.GetValue(model));
         }
 
-        View.Update();
+        view.Update();
+    }
+
+    public void SynchronizeAll()
+    {
+        foreach (TView view in ViewModels.Keys)
+        {
+            Synchronize(view);
+        }
     }
 }
